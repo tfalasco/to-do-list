@@ -1,6 +1,6 @@
-export { todo };
+export { Todo };
 
-class todo {
+class Todo {
     constructor (title, description, dueDate, priority) {
         this.title = title;
         this.description = description;
