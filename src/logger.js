@@ -1,4 +1,4 @@
-export { Log };
+export { Log, Level };
 
 const Level = Object.freeze( {
     CRITICAL: 0,
@@ -22,6 +22,19 @@ class Log {
     static v(verboseString) {
         if (this.logLevel >= Level.VERBOSE) {
             console.log(verboseString);
+        }
+    }
+
+    /**
+     * @param {Level} newLevel
+     */
+    static set logLevel(newLevel) {
+        if ((newLevel >= Level.CRITICAL) &&
+            (newLevel <= Level.VERBOSE)) {
+                this.logLevel = newLevel;
+        }
+        else {
+            this.e("Could not set invalid log level.");
         }
     }
 }
