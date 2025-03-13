@@ -2,6 +2,11 @@ import { Log } from "./logger.js";
 
 export { Todo, Priority };
 
+/**
+ * Priority
+ * 
+ * An enum to define valid Todo priorities
+ */
 const Priority = Object.freeze ({
     NONE: 0,
     LOW: 1,
@@ -10,7 +15,7 @@ const Priority = Object.freeze ({
 });
 
 class Todo {
-    _priority
+    #priority
 
     /**
      * @param {String} title
@@ -35,11 +40,12 @@ class Todo {
                 Log.v(`Set new priority ${newPriority}`);
         }
         else {
+            this._priority = Priority.NONE;
             Log.e("Could not set invalid priority.");
         }
     }
 
     get priority() {
-        return this._priority;
+        return this.#priority;
     }
 }
