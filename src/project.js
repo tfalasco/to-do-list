@@ -6,11 +6,17 @@ export { Project };
 class Project {
     #todos;
 
+    /**
+     * @param {String} name
+     */
     constructor (name) {
         this.name = name;
         this.#todos = new Array();
     }
 
+    /**
+     * @param {Todo} newTodo
+     */
     addTodo(newTodo) {
         if (newTodo instanceof Todo) {
             this.#todos.push(newTodo);
