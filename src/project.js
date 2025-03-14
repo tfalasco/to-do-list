@@ -15,6 +15,10 @@ class Project {
     }
 
     /**
+     * addTodo
+     *
+     * Add a new Todo object to the private #todos array
+     *
      * @param {Todo} newTodo
      */
     addTodo(newTodo) {
