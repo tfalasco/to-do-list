@@ -85,7 +85,7 @@ function restoreTodo (key) {
     return new Todo(
         todoJson.title,
         todoJson.description,
-        todoJson.date,
+        new Date(todoJson.dueDate),
         todoJson.priority,
     )
 }
