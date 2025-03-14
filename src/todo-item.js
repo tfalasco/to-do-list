@@ -4,7 +4,7 @@ export { Todo, Priority };
 
 /**
  * Priority
- * 
+ *
  * An enum to define valid Todo priorities
  */
 const Priority = Object.freeze ({
@@ -27,7 +27,7 @@ class Todo {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
-        this.priority = priority;
+        this.#priority = priority;
     }
 
     /**
@@ -36,11 +36,11 @@ class Todo {
     set priority(newPriority) {
         if ((newPriority >= Priority.NONE) &&
             (newPriority <= Priority.HIGH)) {
-                this._priority = newPriority;
+                this.#priority = newPriority;
                 Log.v(`Set new priority ${newPriority}`);
         }
         else {
-            this._priority = Priority.NONE;
+            this.#priority = Priority.NONE;
             Log.e("Could not set invalid priority.");
         }
     }
