@@ -1,8 +1,9 @@
 
-import { Todo } from "./todo-item";
-import { Log } from "./logger";
+import { Todo } from "./todo-item.js";
+import { Log } from "./logger.js";
+import { Project } from "./project.js";
 
-export { saveTodo, restoreTodo };
+export { saveTodo, restoreTodo, saveProject, restoreProject };
 
 // Storage type
 // "sessionStorage" saves data for a single session
@@ -94,7 +95,6 @@ function saveTodo(key, todo) {
     }
 
     // Save the Todo
-    //
     localStorage.setItem(key, stringifyTodo(todo));
     Log.v(`Saved Todo ${todo.title}.`);
 }
@@ -128,4 +128,124 @@ function restoreTodo (key) {
     }
 
     return parseTodoString(todoString);
+}
+
+/**
+ * stringifyProject
+ *
+ * Convert Project into storable JSON string
+ *
+ * @param {Project} project
+ * @returns JSON string representation of the Project
+ */
+function stringifyProject(project) {
+    // Stringify the project object
+    const projectJsonStr = JSON.stringify(project);
+
+    // The array of Todos does not automatically get stringified.
+    // Stringify the Todos array and add it to the JSON.
+    const projectJsonObj = JSON.parse(projectJsonStr);
+    let todosArray = new Array();
+    for (const todo of project.todos) {
+        todosArray.push(stringifyTodo(todo));
+    }
+    projectJsonObj.todos = todosArray;
+
+    return JSON.stringify(projectJsonObj);
+}
+
+/**
+ * parseProjectString
+ *
+ * Convert a JSON string representation of a Todo into a Todo object
+
+* @param {String} projectString
+ * @returns A Project object created from the JSON string
+ */
+function parseProjectString(projectString){
+    // Parse the JSON string to an intermediate object
+    const projectJson = JSON.parse(projectString);
+
+    Log.d(`string: ${projectString}`);
+    Log.d(`json todos: ${projectJson.todos}`);
+
+    // Create and return a new Project made from the restored data
+    const project = new Project(projectJson.name);
+    for (const todoStr of projectJson.todos) {
+        const todoJson = parseTodoString(todoStr);
+        Log.d(`todoJson: ${todoJson}`);
+        Log.d(`todoJson.title: ${todoJson.title}`);
+        const todo = new Todo (
+            todoJson.title,
+            todoJson.description,
+            new Date(todoJson.dueDate),
+            todoJson.priority,
+        )
+        project.addTodo(todo);
+    }
+
+    return project;
+}
+
+/**
+ * saveProject
+ *
+ * Save the project to local storage
+ *
+ * @param {String} key
+ * @param {Project} project
+ * @returns
+ */
+function saveProject(key, project) {
+    Log.v(`Saving Project ${project.name}`);
+
+    // Validate we can save this Project
+    if (!storageAvailable()) {
+        Log.e("localStorage is not available.  Cannot save Project.");
+        return;
+    }
+    if (!(typeof key === 'string')) {
+        Log.e("'key' param must be a String.  Project not saved.");
+        Log.e(`'key' is instance of ${key.constructor.name}`)
+        return;
+    }
+    if (!(project instanceof Project)) {
+        Log.e("'project' param must be a Project.  Nothing saved.");
+        return;
+    }
+
+    // Save the project
+    localStorage.setItem(key, stringifyProject(project));
+    Log.v(`Saved Project ${project.name}`);
+}
+
+/**
+ * restoreProject
+ *
+ * Recreate a Project from the stored JSON string in localStorage
+ *
+ * @param {String} key
+ * @returns Project object recreated from the key in localStorage
+ */
+function restoreProject(key) {
+    Log.v(`Restoring Project from key ${key}`);
+
+    // Validate we can restore this Project
+    if (!storageAvailable()) {
+        Log.e("localStorage is not available.  Cannot restore Project.");
+        return;
+    }
+    if (!(typeof key === 'string')) {
+        Log.e("'key' param must be a String.  Project not restored.");
+        return;
+    }
+
+    // Get the raw stored data as a JSON string
+    const projectString = localStorage.getItem(key);
+    if (!projectString) {
+        Log.e(`Could not restore ${key}.`);
+        return;
+    }
+
+    return parseProjectString(projectString);
 }
