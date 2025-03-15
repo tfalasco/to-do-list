@@ -28,6 +28,28 @@ function storageAvailable() {
     }
 }
 
+function stringifyTodo(todo) {
+    // The protected properties don't get stringified, so we have
+    // to modify the JSON to add the protected properties.
+    const todoJsonStr = JSON.stringify(todo);
+    const todoJsonObj = JSON.parse(todoJsonStr);
+    todoJsonObj.priority = todo.priority;
+    return JSON.stringify(todoJsonObj);
+}
+
+function parseTodoString(todoString) {
+    // Parse the JSON string to an intermediate object
+    const todoJson = JSON.parse(todoString);
+
+    // Create and return a new Todo made from the restored data
+    return new Todo(
+        todoJson.title,
+        todoJson.description,
+        new Date(todoJson.dueDate),
+        todoJson.priority,
+    )
+}
+
 function saveTodo(key, todo) {
     Log.v(`Saving Todo ${todo.title}`);
 
@@ -47,14 +69,8 @@ function saveTodo(key, todo) {
     }
 
     // Save the Todo
-    // First stringify the Todo.  But the protected properties don't
-    // get strigified, so we have to modify the JSON to add the
-    // protected properties.
-    let todoJsonStr = JSON.stringify(todo);
-    let todoJsonObj = JSON.parse(todoJsonStr);
-    todoJsonObj.priority = todo.priority;
-    todoJsonStr = JSON.stringify(todoJsonObj);
-    localStorage.setItem(key, todoJsonStr);
+    //
+    localStorage.setItem(key, stringifyTodo(todo));
     Log.v(`Saved Todo ${todo.title}.`);
 }
 
@@ -72,20 +88,11 @@ function restoreTodo (key) {
     }
 
     // Get the raw stored data as a JSON string
-    const todoRaw = localStorage.getItem(key);
-    if (!todoRaw) {
+    const todoString = localStorage.getItem(key);
+    if (!todoString) {
         Log.e(`Could not restore ${key}.`);
         return;
     }
 
-    // Parse the JSON to an intermediate object
-    const todoJson = JSON.parse(todoRaw);
-
-    // Create and return a new Todo made from the restored data
-    return new Todo(
-        todoJson.title,
-        todoJson.description,
-        new Date(todoJson.dueDate),
-        todoJson.priority,
-    )
+    return parseTodoString(todoString);
 }
