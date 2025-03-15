@@ -31,4 +31,8 @@ class Project {
             Log.e(`Expected Todo, got ${typeof newTodo}.`);
         }
     }
+
+    get todos() {
+        return this.#todos;
+    }
 }
