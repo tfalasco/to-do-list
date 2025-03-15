@@ -28,6 +28,14 @@ function storageAvailable() {
     }
 }
 
+/**
+ * stringifyTodo
+ *
+ * Convert a Todo into a storable JSON string
+ *
+ * @param {Todo} todo
+ * @returns JSON String representation of the Todo
+ */
 function stringifyTodo(todo) {
     // The protected properties don't get stringified, so we have
     // to modify the JSON to add the protected properties.
@@ -37,6 +45,14 @@ function stringifyTodo(todo) {
     return JSON.stringify(todoJsonObj);
 }
 
+/**
+ * parseTodoString
+ *
+ * Convert a JSON string representation of a Todo into a Todo object
+ *
+ * @param {String} todoString
+ * @returns a Todo object created from the JSON string
+ */
 function parseTodoString(todoString) {
     // Parse the JSON string to an intermediate object
     const todoJson = JSON.parse(todoString);
@@ -50,6 +66,15 @@ function parseTodoString(todoString) {
     )
 }
 
+/**
+ * saveTodo
+ *
+ * Save the Todo to localStorage
+ *
+ * @param {String} key
+ * @param {Todo} todo
+ * @returns
+ */
 function saveTodo(key, todo) {
     Log.v(`Saving Todo ${todo.title}`);
 
@@ -74,6 +99,14 @@ function saveTodo(key, todo) {
     Log.v(`Saved Todo ${todo.title}.`);
 }
 
+/**
+ * restoreTodo
+ *
+ * Recreate a Todo from the stored JSON string in localStorage
+ *
+ * @param {String} key
+ * @returns Todo object recreated from the key in localStorage
+ */
 function restoreTodo (key) {
     Log.v(`Restoring Todo from key ${key}`);
 
