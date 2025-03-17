@@ -1,0 +1,53 @@
+.custom-check-container{
+    display: flex;
+    align-items: center;
+}
+
+.custom-check-container label {
+    cursor: pointer;
+    display: flex;
+}
+
+.custom-check-container input[type="checkbox"] {
+    cursor: pointer;
+    opacity: 0;
+    position: absolute;
+}
+
+.custom-check-container label::before {
+    content: "";
+    width: 1em;
+    height: 1em;
+    border-radius: 0.15em;
+    margin-right: 0.5em;
+    border: 0.05em solid black;
+}
+
+.custom-check-container label:hover::before,
+.custom-check-container input [type="checkbox"]:hover + label::before {
+    background-color: lightblue;
+}
+
+.custom-check-container input[type="checkbox"]:focus + label::before {
+    box-shadow: 0 0 20px blue;
+}
+
+.custom-check-container input[type="checkbox"]:disabled + label,
+.custom-check-container input[type="checkbox"]:disabled {
+    color: #aaa;
+    cursor: default;
+}
+
+.custom-check-container input[type="checkbox"]:checked + label::before {
+    content: "\002714"; /* Check symbol */
+    background-color: lightskyblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:white;
+}
+
+.custom-check-container input[type="checkbox"]:disabled + label::before {
+    background-color: #ccc;
+    border-color: #999;
+}
