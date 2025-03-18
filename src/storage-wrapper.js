@@ -157,17 +157,14 @@ function stringifyProject(project) {
 /**
  * parseProjectString
  *
- * Convert a JSON string representation of a Todo into a Todo object
-
-* @param {String} projectString
+ * Convert a JSON string representation of a Project into a Project object
+ *
+ * @param {String} projectString
  * @returns A Project object created from the JSON string
  */
 function parseProjectString(projectString){
     // Parse the JSON string to an intermediate object
     const projectJson = JSON.parse(projectString);
-
-    Log.d(`string: ${projectString}`);
-    Log.d(`json todos: ${projectJson.todos}`);
 
     // Create and return a new Project made from the restored data
     const project = new Project(projectJson.name);
