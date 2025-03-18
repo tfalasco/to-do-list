@@ -3,7 +3,14 @@ import { Todo } from "./todo-item.js";
 import { Log } from "./logger.js";
 import { Project } from "./project.js";
 
-export { saveTodo, restoreTodo, saveProject, restoreProject };
+export {
+    saveTodo,
+    restoreTodo,
+    saveProject,
+    restoreProject,
+    saveProjectArray,
+    restoreProjectArray,
+ };
 
 // Storage type
 // "sessionStorage" saves data for a single session
@@ -245,4 +252,112 @@ function restoreProject(key) {
     }
 
     return parseProjectString(projectString);
+}
+
+/**
+ * stringifyProjectArray
+ *
+ * Convert and array of Projects into storable JSON string
+ * @param {Project[]} projectArray
+ * @returns JSON string representation of the array of Projects
+ */
+function stringifyProjectArray(projectArray) {
+    // Stringify the array of Project objects
+    let stringifiedProjectArray = new Array();
+    for (const project of projectArray) {
+        stringifiedProjectArray.push(stringifyProject(project));
+    }
+
+    return JSON.stringify(stringifiedProjectArray);
+    // return stringifiedProjectArray;
+}
+
+/**
+ * parseProjectArrayString
+ *
+ * Convert a JSON string representation of an array of Projects into a Project array
+ *
+ * @param {String} projectArrayString
+ * @returns A Project array created from the JSON string
+ */
+function parseProjectArrayString(projectArrayString){
+    // Parse the JSON string to an intermediate object
+    const projectJsonArray = JSON.parse(projectArrayString);
+
+    // Create and return a new array of Projects made from the restored data
+    let projectArray = new Array();
+    for (const projectJson of projectJsonArray) {
+        projectArray.push(parseProjectString(projectJson));
+    }
+
+    return projectArray;
+}
+
+/**
+ * saveProjectArray
+ *
+ * Save the array of Projects to local storage
+ *
+ * @param {String} key
+ * @param {Project[]} projectArray
+ * @returns
+ */
+function saveProjectArray(key, projectArray) {
+    Log.v(`Saving Project array (${projectArray.length} Projects)`);
+
+    // Validate we can save this array of Projects
+    if (!storageAvailable()) {
+        Log.e("localStorage is not available.  Cannot save Project array.");
+        return;
+    }
+    if (!(typeof key === 'string')) {
+        Log.e("'key' param must be a String.  Project array not saved.");
+        Log.e(`'key' is instance of ${key.constructor.name}`)
+        return;
+    }
+    if (projectArray.length === 0) {
+        Log.e("No Projects in 'projectArray'.  Nothing to save.");
+        return;
+    }
+    for (let i = 0; i < projectArray.length; i++) {
+        if (!(projectArray[i] instanceof Project)) {
+            Log.e("'projectArray' param must be an array of Projects.  Nothing saved.");
+            return;
+        }
+    }
+
+    // Save the Project array
+    localStorage.setItem(key, stringifyProjectArray(projectArray));
+    Log.v(`Saved Project array (${projectArray.length} Projects)`);
+}
+
+/**
+ * restoreProjectArray
+ *
+ * Recreate an array of Projects from the stored JSON string in localStorage
+ *
+ * @param {String} key
+ * @returns The array of Projects recreated from the key in localStorage
+ */
+function restoreProjectArray(key) {
+    Log.v(`Restoring Project array from key ${key}`);
+
+    // Validate we can restore this Project array
+    if (!storageAvailable()) {
+        Log.e("localStorage is not available.  Cannot restore Project.");
+        return;
+    }
+    if (!(typeof key === 'string')) {
+        Log.e("'key' param must be a String.  Project not restored.");
+        return;
+    }
+
+    // Get the raw stored data as a JSON string
+    const projectArrayString = localStorage.getItem(key);
+    if (!projectArrayString) {
+        Log.e(`Could not restore ${key}.`);
+        return;
+    }
+
+    return parseProjectArrayString(projectArrayString);
 }
