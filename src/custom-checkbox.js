@@ -1,8 +1,8 @@
-export { createCheckbox };
+export { createCustomCheckbox };
 
 import "./styles/custom-checkbox.css";
 
-function createCheckbox(text, id, checked, disabled) {
+function createCustomCheckbox(text, id, callback, checked = false, disabled = false) {
     const container = document.createElement("div");
     const chk = document.createElement("input");
     const lbl = document.createElement("label");
@@ -14,6 +14,10 @@ function createCheckbox(text, id, checked, disabled) {
 
     lbl.htmlFor = id;
     lbl.innerText = text;
+
+    if (arguments.length >= 3) {
+        chk.addEventListener("change", callback);
+    }
 
     container.classList.add("custom-check-container");
     container.appendChild(chk);
