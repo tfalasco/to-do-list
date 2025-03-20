@@ -50,6 +50,7 @@ function stringifyTodo(todo) {
     const todoJsonStr = JSON.stringify(todo);
     const todoJsonObj = JSON.parse(todoJsonStr);
     todoJsonObj.priority = todo.priority;
+    todoJsonObj.id = todo.id;
     return JSON.stringify(todoJsonObj);
 }
 
@@ -67,10 +68,12 @@ function parseTodoString(todoString) {
 
     // Create and return a new Todo made from the restored data
     return new Todo(
-        todoJson.title,
-        todoJson.description,
+        todoJson._title,
+        todoJson._description,
         new Date(todoJson.dueDate),
-        todoJson.priority,
+        todoJson._priority,
+        todoJson.id,
+        todoJson._done,
     )
 }
 
