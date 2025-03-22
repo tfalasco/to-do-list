@@ -31,7 +31,7 @@ class Todo {
         this.dueDate = dueDate;
         this._priority = priority;
         if (id === undefined) {
-            this.#id = Date.now().toString(36) + Math.random().toString(36).slice(2);
+            this.#id = Date.now().toString(36) + "_" + Math.random().toString(36).slice(2);
         }
         else {
             this.#id = id;
@@ -43,7 +43,13 @@ class Todo {
             this._done = done;
         }
 
-        save(this);
+        // If an ID was not provided, then this is a new Todo.
+        // If an ID was provided, then this is Todo is getting recreated
+        // from stored data.
+        // In the latter case, we do not need to save this Todo.
+        if (id === undefined) {
+            save(this);
+        }
     }
 
     /**

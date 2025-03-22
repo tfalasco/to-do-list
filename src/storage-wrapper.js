@@ -8,19 +8,29 @@ export {
     restoreTodo,
     saveProject,
     restoreProject,
-    saveProjectArray,
-    restoreProjectArray,
+    fetchProjectIds,
  };
 
 // Storage type
 // "sessionStorage" saves data for a single session
 // "localStorage" saves data across sessions
 const type = "localStorage";
+const storage = window[type];
 
+// Project IDs Array
+// Projects are stored by their ids.  This array tracks all
+// stored projectid s so they can be easily restored.
+const projectIds = new Array();
+
+/**
+ * storageAvailable
+ *
+ * Checks if storage is available before saving values to localstorage
+ *
+ * @returns
+ */
 function storageAvailable() {
-    let storage;
     try {
-        storage = window[type];
         const x = "__storage_test__";
         storage.setItem(x, x);
         storage.removeItem(x);
@@ -33,6 +43,45 @@ function storageAvailable() {
             storage &&
             storage.length !== 0
         );
+    }
+}
+
+/**
+ * storeProjectId
+ *
+ * Stores the project ID in the projectIds array and saves to
+ * local storage.
+ *
+ * If the ID already exists in the array, nothing is done.
+ * @param {String} projectId
+ */
+function storeProjectId(projectId) {
+    if (!projectIds.includes(projectId)) {
+        projectIds.push(projectId);
+        if (!storageAvailable()) {
+            Log.e("localStorage is not available.  Cannot save projectIds.");
+            return;
+        }
+        else {
+            storage.setItem("projectIds", JSON.stringify(projectIds));
+        }
+    }
+}
+
+/**
+ * fetchProjectIds
+ *
+ * Reads the saved array of saved project IDs and returns it.
+ *
+ * @returns Array of project IDs saved in localstorage
+ */
+function fetchProjectIds() {
+    if (!storageAvailable()) {
+        Log.e("localStorage is not available.  Cannot restore projectIds.");
+        return null;
+    }
+    else {
+        return JSON.parse(storage.getItem("projectIds"));
     }
 }
 
@@ -105,7 +154,7 @@ function saveTodo(key, todo) {
     }
 
     // Save the Todo
-    localStorage.setItem(key, stringifyTodo(todo));
+    storage.setItem(key, stringifyTodo(todo));
     Log.v(`Saved Todo ${todo.title}.`);
 }
 
@@ -131,7 +180,7 @@ function restoreTodo (key) {
     }
 
     // Get the raw stored data as a JSON string
-    const todoString = localStorage.getItem(key);
+    const todoString = storage.getItem(key);
     if (!todoString) {
         Log.e(`Could not restore ${key}.`);
         return;
@@ -152,14 +201,15 @@ function stringifyProject(project) {
     // Stringify the project object
     const projectJsonStr = JSON.stringify(project);
 
-    // The array of Todos does not automatically get stringified.
-    // Stringify the Todos array and add it to the JSON.
+    // The protected properties don't get stringified, so we have
+    // to modify the JSON to add the protected properties.
     const projectJsonObj = JSON.parse(projectJsonStr);
-    let todosArray = new Array();
-    for (const todo of project.todos) {
-        todosArray.push(stringifyTodo(todo));
-    }
-    projectJsonObj.todos = todosArray;
+    projectJsonObj.id = project.id;
+
+    // We are only saving the IDs of this project's Todos because
+    // each Todo is saved separately, using its ID as the key.
+    const todoKeyArray = Array.from(project.todos.keys());
+    projectJsonObj._todos = todoKeyArray;
 
     return JSON.stringify(projectJsonObj);
 }
@@ -177,18 +227,14 @@ function parseProjectString(projectString){
     const projectJson = JSON.parse(projectString);
 
     // Create and return a new Project made from the restored data
-    const project = new Project(projectJson.name);
-    for (const todoStr of projectJson.todos) {
-        const todoJson = parseTodoString(todoStr);
-        Log.d(`todoJson: ${todoJson}`);
-        Log.d(`todoJson.title: ${todoJson.title}`);
-        const todo = new Todo (
-            todoJson.title,
-            todoJson.description,
-            new Date(todoJson.dueDate),
-            todoJson.priority,
-        )
-        project.addTodo(todo);
+    const project = new Project(projectJson._name, projectJson.id);
+    // We only store the ID of each todo, so we need to fetch the
+    // Todo object from memory and add it to the project
+    for (const todoId of projectJson._todos) {
+        const todo = restoreTodo(todoId);
+        if (todo) {
+            project.addTodo(todo);
+        }
     }
 
     return project;
@@ -204,7 +250,7 @@ function parseProjectString(projectString){
  * @returns
  */
 function saveProject(key, project) {
-    Log.v(`Saving Project ${project.name}`);
+    Log.v(`Saving Project ${project._name}`);
 
     // Validate we can save this Project
     if (!storageAvailable()) {
@@ -222,8 +268,11 @@ function saveProject(key, project) {
     }
 
     // Save the project
-    localStorage.setItem(key, stringifyProject(project));
-    Log.v(`Saved Project ${project.name}`);
+    storage.setItem(key, stringifyProject(project));
+    Log.v(`Saved Project ${project._name}`);
+
+    // Save the project ID
+    storeProjectId(project.id);
 }
 
 /**
@@ -248,7 +297,7 @@ function restoreProject(key) {
     }
 
     // Get the raw stored data as a JSON string
-    const projectString = localStorage.getItem(key);
+    const projectString = storage.getItem(key);
     if (!projectString) {
         Log.e(`Could not restore ${key}.`);
         return;
@@ -330,7 +379,7 @@ function saveProjectArray(key, projectArray) {
     }
 
     // Save the Project array
-    localStorage.setItem(key, stringifyProjectArray(projectArray));
+    storage.setItem(key, stringifyProjectArray(projectArray));
     Log.v(`Saved Project array (${projectArray.length} Projects)`);
 }
 
@@ -356,7 +405,7 @@ function restoreProjectArray(key) {
     }
 
     // Get the raw stored data as a JSON string
-    const projectArrayString = localStorage.getItem(key);
+    const projectArrayString = storage.getItem(key);
     if (!projectArrayString) {
         Log.e(`Could not restore ${key}.`);
         return;
