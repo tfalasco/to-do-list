@@ -1,5 +1,5 @@
 import { Log } from "./logger.js";
-import { saveTodo } from "./storage-wrapper.js";
+import { autoSaveTodo, saveTodo } from "./storage-wrapper.js";
 
 export { Todo, Priority };
 
@@ -16,8 +16,6 @@ const Priority = Object.freeze ({
 });
 
 class Todo {
-    #id
-
     /**
      * @param {String} title
      * @param {String} description
@@ -31,10 +29,10 @@ class Todo {
         this.dueDate = dueDate;
         this._priority = priority;
         if (id === undefined) {
-            this.#id = Date.now().toString(36) + "_" + Math.random().toString(36).slice(2);
+            this._id = Date.now().toString(36) + "_" + Math.random().toString(36).slice(2);
         }
         else {
-            this.#id = id;
+            this._id = id;
         }
         if (done === undefined) {
             this._done = false;
@@ -43,13 +41,8 @@ class Todo {
             this._done = done;
         }
 
-        // If an ID was not provided, then this is a new Todo.
-        // If an ID was provided, then this is Todo is getting recreated
-        // from stored data.
-        // In the latter case, we do not need to save this Todo.
-        if (id === undefined) {
-            save(this);
-        }
+        saveTodo(this.id, this);
+        return autoSaveTodo(this);
     }
 
     /**
@@ -57,7 +50,6 @@ class Todo {
      */
     set title(newTitle) {
         this._title = newTitle;
-        save(this);
     }
 
     get title() {
@@ -69,7 +61,6 @@ class Todo {
      */
     set description(newDescription) {
         this._description = newDescription;
-        save(this);
     }
 
     get description() {
@@ -89,7 +80,6 @@ class Todo {
             this._priority = Priority.NONE;
             Log.e("Could not set invalid priority.");
         }
-        save(this);
     }
 
     get priority() {
@@ -97,7 +87,7 @@ class Todo {
     }
 
     get id() {
-        return this.#id;
+        return this._id;
     }
 
     /**
@@ -105,14 +95,10 @@ class Todo {
      */
     set done(isDone) {
         this._done = isDone;
-        save(this);
+        return this._done;
     }
 
     get done() {
         return this._done;
     }
-}
-
-function save(todo) {
-    saveTodo(todo.id, todo);
 }
