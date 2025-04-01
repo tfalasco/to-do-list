@@ -1,3 +1,5 @@
+@import "color-scheme.css";
+
 .custom-check-container{
     display: flex;
     align-items: center;
@@ -20,16 +22,18 @@
     height: 1em;
     border-radius: 0.15em;
     margin-right: 0.5em;
-    border: 0.05em solid black;
+    border-width: 0.05em;
+    border-style:  solid;
+    border-color: var(--md-sys-color-outline);
 }
 
 .custom-check-container label:hover::before,
 .custom-check-container input [type="checkbox"]:hover + label::before {
-    background-color: lightblue;
+    background-color: var(--md-sys-color-surface-variant);
 }
 
 .custom-check-container input[type="checkbox"]:focus + label::before {
-    box-shadow: 0 0 20px blue;
+    box-shadow: 0 0 20px var(--md-sys-color-primary);
 }
 
 .custom-check-container input[type="checkbox"]:disabled + label,
@@ -40,11 +44,11 @@
 
 .custom-check-container input[type="checkbox"]:checked + label::before {
     content: "\002714"; /* Check symbol */
-    background-color: lightskyblue;
+    background-color: var(--md-sys-color-primary);
     display: flex;
     justify-content: center;
     align-items: center;
-    color:white;
+    color:var(--md-sys-color-on-primary);
 }
 
 .custom-check-container input[type="checkbox"]:disabled + label::before {

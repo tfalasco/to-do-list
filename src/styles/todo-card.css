@@ -1,16 +1,25 @@
+@import "color-scheme.css";
+
 .todo-card {
-    border: 2px solid darkgray;
+    color: var(--md-sys-color-on-surface);
+    outline: 2px solid var(--md-sys-color-outline);
     border-radius: 5px;
     margin: 10px;
     padding: 5px;
+    background-color: var(--md-sys-color-surface);
+    box-shadow: 2px 2px 8px var(--md-sys-color-shadow);
     display: flex;
     flex-direction: column;
+}
+
+.todo-card:hover {
+    outline: 4px solid var(--md-sys-color-primary);
 }
 
 .todo-done > h2,
 .todo-done > p,
 .todo-done label {
-    color: #888;
+    color: var(--md-sys-color-on-surface-variant);
 }
 
 .todo-done > h2,

@@ -5,25 +5,31 @@ import { createTodoCard } from "./display-todo.js";
 import { Log } from "./logger.js";
 import { Project } from "./project";
 import { Todo } from "./todo-item.js";
+import "./styles/project.css";
 
-const container = document.createElement("div");
 
 function createProjectCard(project) {
+    const container = document.createElement("div");
+    const details = document.createElement("details");
+
     if (!project instanceof Project) {
         Log.e("'project' must be of type Project.  Nothing displayed.");
         return;
     }
 
-    const title = document.createElement("h1");
+    const title = document.createElement("summary");
     title.innerText = project.name;
-    container.appendChild(title);
+    details.appendChild(title);
 
     const todos = project.todos;
     for (const todo of todos.values()) {
         const todoTitle = document.createElement("h2");
         todoTitle.innerText = todo.title;
-        container.appendChild(displayTodo(todo));
+        details.appendChild(displayTodo(todo));
     }
+
+    container.classList.add("project-container");
+    container.appendChild(details);
 
     return container;
 }

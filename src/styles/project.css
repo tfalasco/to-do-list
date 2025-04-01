@@ -1,0 +1,17 @@
+summary {
+    font-size: 2em;
+}
+
+summary::marker {
+    color: var(--md-sys-color-primary);
+}
+
+.project-container {
+    outline: 2px solid var(--md-sys-color-outline);
+    border-radius: 5px;
+    margin: 10px;
+    padding: 5px;
+    color: var(--md-sys-color-on-surface-variant);
+    background-color: var(--md-sys-color-surface-variant);
+    box-shadow: 2px 2px 8px var(--md-sys-color-shadow);
+}
