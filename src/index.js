@@ -1,7 +1,7 @@
 import { Todo, Priority } from "./todo-item.js";
 import { Project } from "./project.js";
 import * as storage from "./storage-wrapper.js";
-import { createProjectCard } from "./display-project.js";
+import { createProjectCard, createProjectDialog } from "./display-project.js";
 import { createHero } from "./display-hero.js";
 import "./styles/main.css";
 
@@ -25,6 +25,10 @@ function fetchAllProjects() {
 
     return projects;
 }
+
+// Create the new project modal dialog
+const newProjectDialog = createProjectDialog();
+document.body.appendChild(newProjectDialog);
 
 function createTestData() {
     const date = new Date();
