@@ -1,3 +1,5 @@
+@import "color-scheme.css";
+
 summary {
     font-size: 2em;
 }
@@ -14,4 +16,47 @@ summary::marker {
     color: var(--md-sys-color-on-surface-variant);
     background-color: var(--md-sys-color-surface-variant);
     box-shadow: 2px 2px 8px var(--md-sys-color-shadow);
+}
+
+#add-project-dialog {
+    outline: 2px solid var(--md-sys-color-outline);
+    border-radius: 5px;
+    padding: 1em;
+    color: var(--md-sys-color-on-surface-variant);
+    background-color: var(--md-sys-color-surface-variant);
+}
+
+#title-input {
+    margin-left: 1em;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+label {
+    font-size: 1.5em;
+}
+
+input[type="text"] {
+    font-size: 1.5em;
+}
+
+button[type="button"] {
+    font-size: 1.25em;
+    border: 2px solid var(--md-sys-color-outline);
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+#add-button {
+    color: var(--md-sys-color-on-primary-container);
+    background-color: var(--md-sys-color-primary-container);
+}
+
+#cancel-button {
+    color: var(--md-sys-color-on-secondary-container);
+    background-color: var(--md-sys-color-secondary-container);
 }
