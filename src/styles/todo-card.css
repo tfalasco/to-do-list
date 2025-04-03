@@ -16,13 +16,33 @@
     outline: 4px solid var(--md-sys-color-primary);
 }
 
-.todo-done > h2,
-.todo-done > p,
-.todo-done label {
-    color: var(--md-sys-color-on-surface-variant);
+.todo-card > h2,
+.todo-card > p,
+.todo-card > div {
+    padding: 0px;
+    margin: 5px;
 }
 
-.todo-done > h2,
+.todo-done h2,
+.todo-done p,
+.todo-done label {
+    color: gray;
+}
+
+.due-done-container {
+    padding: 0px;
+    margin: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.due-done-container p {
+    padding: 0px;
+    margin: 5px 0px;
+}
+
+/* .todo-done > h2,
 .todo-done > p {
     text-decoration: line-through;
-}
+} */
