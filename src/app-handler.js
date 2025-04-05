@@ -39,10 +39,15 @@ class AppHandler {
         // Display the hero
         document.body.appendChild(createHero());
 
+        // Create an outer container to center the content
+        const layout = document.createElement("div");
+        layout.id = "layout";
+        document.body.appendChild(layout);
+
         // Create a container to hold the content
         const content = document.createElement("div");
         content.id = "content";
-        document.body.appendChild(content);
+        layout.appendChild(content);
 
         // Create the new project modal dialog
         const newProjectDialog = createProjectDialog();

@@ -12,3 +12,17 @@ html {
     color: var(--md-sys-color-on-background);
     background-color: var(--md-sys-color-background);
 }
+
+#layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-width: 500px;
+}
+
+#content {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
