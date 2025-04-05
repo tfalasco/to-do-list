@@ -1,4 +1,4 @@
-export { createProjectCard, createProjectDialog }
+export { createProjectCard, createProjectDialog, refreshProjectCardTodos }
 
 import { createCustomCheckbox } from "./custom-checkbox.js";
 import { createTodoCard } from "./display-todo.js";
@@ -6,11 +6,14 @@ import { Log } from "./logger.js";
 import { Project } from "./project";
 import { Todo } from "./todo-item.js";
 import "./styles/project.css";
+import "./styles/modal.css";
 
 
 function createProjectCard(project) {
     const container = document.createElement("div");
     const details = document.createElement("details");
+    const todoContainer = document.createElement("div");
+    const addTodoButton = document.createElement("button");
 
     if (!project instanceof Project) {
         Log.e("'project' must be of type Project.  Nothing displayed.");
@@ -23,10 +26,19 @@ function createProjectCard(project) {
 
     const todos = project.todos;
     for (const todo of todos.values()) {
-        const todoTitle = document.createElement("h2");
-        todoTitle.innerText = todo.title;
-        details.appendChild(displayTodo(todo));
+        todoContainer.appendChild(displayTodo(todo));
     }
+    todoContainer.id = `${project.id}-todos`;
+    details.appendChild(todoContainer);
+
+    addTodoButton.classList.add("add-todo-button");
+    addTodoButton.innerText = "+";
+    addTodoButton.addEventListener("click", () => {
+        const dialog = document.querySelector("#add-todo-dialog");
+        dialog.setAttribute("data-project-ref", project.id);
+        dialog.showModal();
+    })
+    details.appendChild(addTodoButton);
 
     container.classList.add("project-container");
     container.appendChild(details);
@@ -43,11 +55,22 @@ function displayTodo(todo) {
     return createTodoCard(todo);
 }
 
+function refreshProjectCardTodos(project) {
+    const todoContainer = document.querySelector(`#${project.id}-todos`);
+    todoContainer.innerHTML = "";
+
+    const todos = project.todos;
+    for (const todo of todos.values()) {
+        todoContainer.appendChild(displayTodo(todo));
+    }
+}
+
 function createProjectDialog() {
     // Create DOM elements and set their attributes
     // Create the outer dialog
     const dialog = document.createElement("dialog");
     dialog.id = "add-project-dialog";
+    dialog.classList.add("modal-dialog");
 
     // Create the form for the dialog
     const entryForm = document.createElement("form");
@@ -59,7 +82,7 @@ function createProjectDialog() {
     const titleInput = document.createElement("input");
     titleInput.type = "text";
     titleInput.name = "title-input";
-    titleInput.id = "title-input";
+    titleInput.classList.add("input");
     titleInput.autofocus = true;
 
     const titleLabel = document.createElement("label");
@@ -72,14 +95,14 @@ function createProjectDialog() {
 
     const cancelButton = document.createElement("button");
     cancelButton.type = "button";
-    cancelButton.id = "cancel-button";
+    cancelButton.classList.add("cancel-button");
     cancelButton.value = "cancel";
     cancelButton.formMethod = "dialog";
     cancelButton.innerText = "Cancel";
 
     const addButton = document.createElement("button");
     addButton.type = "button";
-    addButton.id = "add-button";
+    addButton.classList.add("add-button");
     addButton.value = "add";
     addButton.innerText = "Add";
 
@@ -101,7 +124,6 @@ function createProjectDialog() {
                 // Display the project
                 document.body.appendChild(createProjectCard(newProject));
             }
-
         }
         // Clear the dialog entries
         titleInput.value = "";
