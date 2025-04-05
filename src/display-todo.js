@@ -17,6 +17,7 @@ function createTodoCard(todo) {
     Log.d(todo);
 
     const todoCard = document.createElement("div");
+    const todoTitleBar = document.createElement("div");
     const todoTitle = document.createElement("h2");
     const todoDescription = document.createElement("p");
     const todoDueDonecontainer = document.createElement("div");
@@ -26,17 +27,39 @@ function createTodoCard(todo) {
         const todoCardElement = e.target.parentNode.parentNode.parentNode;
         addOrRemoveDoneStyle(todoCardElement, todo.done);
     }, todo.done, false);
+    const deleteTodoButton = document.createElement("button");
 
+    todoTitleBar.classList.add("todo-title-bar");
     todoTitle.innerText = todo.title;
     todoDescription.innerText = todo.description;
-    todoDueDate.innerText = "Due " + formatDueDate(todo.dueDate);
+    formatDueDate(todoDueDate, todo.dueDate);
     todoDone.type = "checkbox";
     todoDone.checked = todo.done;
     todoDueDonecontainer.classList.add("due-done-container");
 
+
+    deleteTodoButton.classList.add("delete-todo-button");
+    deleteTodoButton.innerText = "X";
+    deleteTodoButton.addEventListener("click", () => {
+        // TODO: get a reference to the parent project
+        // The list of Todos has an ID in the format:
+        // <project id>-todos.  We can use that
+        const todoList = todoCard.parentNode;
+        const projectId = todoList.id.substring(0, todoList.id.indexOf("-"));
+
+        // Delete Todo from Project
+        const appHandler = getAppHandlerInstance();
+        appHandler.deleteTodoFromProject(projectId, todo.id);
+
+        // Update the display
+        appHandler.refreshProjectTodos(projectId);
+    })
+
     todoDueDonecontainer.appendChild(todoDueDate);
     todoDueDonecontainer.appendChild(todoDone);
-    todoCard.appendChild(todoTitle);
+    todoTitleBar.appendChild(todoTitle);
+    todoTitleBar.appendChild(deleteTodoButton);
+    todoCard.appendChild(todoTitleBar);
     todoCard.appendChild(todoDescription);
     todoCard.appendChild(todoDueDonecontainer);
 
@@ -46,24 +69,30 @@ function createTodoCard(todo) {
     return todoCard;
 }
 
-function formatDueDate(dueDate) {
+function formatDueDate(dueDateDiv, dueDate) {
     const dayDifference = differenceInCalendarDays(dueDate, new Date());
     const pluralize = (Math.abs(dayDifference) === 1) ? "" : "s";
+    let when = "";
 
     if (0 === dayDifference) {
-        return "today";
+        when = "today";
     }
     else if (dayDifference === 1) {
-        return "tomorrow";
+        when = "tomorrow";
     }
     else if (dayDifference === -1) {
-        return "yesterday";
+        when = "yesterday";
     }
     else if (dayDifference > 0) {
-        return `in ${dayDifference} day${pluralize}`;
+        when = `in ${dayDifference} day${pluralize}`;
     }
     else {
-        return `${Math.abs(dayDifference)} day${pluralize} ago`;
+        when = `${Math.abs(dayDifference)} day${pluralize} ago`;
+    }
+
+    dueDateDiv.innerText = "Due " + when;
+    if (dayDifference < 0) {
+        dueDateDiv.classList.add("overdue");
     }
 }
 

@@ -109,6 +109,15 @@ class AppHandler {
         }
     }
 
+    deleteTodoFromProject(projectId, todoId) {
+        for (const project of this.#projects) {
+            if (projectId === project.id) {
+                project.deleteTodo(todoId);
+                storage.deleteItem(todoId);
+            }
+        }
+    }
+
     /**
      * refreshProjectTodos(projectId)
      *

@@ -41,6 +41,18 @@ class Project {
         }
     }
 
+    /**
+     * deleteTodo
+     *
+     * Delete the entry from the _todos map with the key that
+     * matches the todoId parameter.
+     *
+     * @param {String} todoId
+     */
+    deleteTodo(todoId) {
+        this._todos.delete(todoId);
+    }
+
     get todos() {
         return this._todos;
     }

@@ -7,6 +7,7 @@ export {
     saveTodo,
     autoSaveTodo,
     restoreTodo,
+    deleteItem,
     saveProject,
     autoSaveProject,
     restoreProject,
@@ -219,6 +220,17 @@ function restoreTodo (key) {
     }
 
     return parseTodoString(todoString);
+}
+
+/**
+ * deleteItem
+ *
+ * Delete the item from storage with the given key
+ *
+ * @param {String} key
+ */
+function deleteItem(key) {
+    storage.removeItem(key);
 }
 
 /**
