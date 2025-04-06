@@ -7,7 +7,7 @@ import { createTodoDialog } from "./display-todo.js";
 import { Log } from "./logger.js";
 import "./styles/main.css";
 
-export { getAppHandlerInstance, createTestData };
+export { getAppHandlerInstance, createTestData, deleteAllData };
 
 let  instance = null;
 
@@ -69,9 +69,15 @@ class AppHandler {
         // Clear the display
         content.innerHTML = "";
 
-        // Display projects
-        for (const project of this.#projects) {
-            content.appendChild(createProjectCard(project));
+        if (this.#projects.length > 0) {
+            // Display projects
+            for (const project of this.#projects) {
+                content.appendChild(createProjectCard(project));
+            }
+        }
+        else {
+            const dialog = document.querySelector("#add-project-dialog");
+            dialog.showModal();
         }
     }
 
@@ -86,8 +92,10 @@ class AppHandler {
     #fetchAllProjects() {
         const projects = new Array();
         const projectIds = storage.fetchProjectIds();
-        for (const projectId of projectIds) {
-            projects.push(storage.restoreProject(projectId));
+        if (projectIds) {
+            for (const projectId of projectIds) {
+                projects.push(storage.restoreProject(projectId));
+            }
         }
 
         return projects;
@@ -136,19 +144,29 @@ class AppHandler {
 }
 
 function createTestData() {
-    const date = new Date();
     localStorage.clear();
+
+    const date = new Date();
     const todoTest1 = new Todo("Test1", "Order this", date, Priority.LOW);
     todoTest1.title = ("Thinger-ma-jobbie");
+
     date.setDate(date.getDate() + 1);
     const todoTest2 = new Todo("Doohickey", "Order that", date, Priority.HIGH);
+
     date.setDate(date.getDate() + 1);
     const todoTest3 = new Todo("Mow the lawn", "Trim the edges, blow off the sidewalk", date, Priority.MEDIUM);
+
     const projectTest1 = new Project("Test PJ1");
     projectTest1.name = "Amazon";
+
     const projectTest2 = new Project("Honey-do");
+
     projectTest1.addTodo(todoTest1);
     projectTest1.addTodo(todoTest2);
     projectTest2.addTodo(todoTest3);
+}
+
+function deleteAllData() {
+    storage.deleteAll();
 }
 

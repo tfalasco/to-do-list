@@ -8,6 +8,7 @@ export {
     autoSaveTodo,
     restoreTodo,
     deleteItem,
+    deleteAll,
     saveProject,
     autoSaveProject,
     restoreProject,
@@ -231,6 +232,15 @@ function restoreTodo (key) {
  */
 function deleteItem(key) {
     storage.removeItem(key);
+}
+
+/**
+ * deleteAll
+ *
+ * Clear everything from storage
+ */
+function deleteAll() {
+    storage.clear();
 }
 
 /**
