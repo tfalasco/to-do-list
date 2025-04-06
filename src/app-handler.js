@@ -101,6 +101,19 @@ class AppHandler {
         return projects;
     }
 
+    addProject(project) {
+        // Add the project to our project list
+        this.#projects.push(project);
+
+        // Add the project to the DOM
+        const content = document.querySelector("#content");
+        const projectCard = createProjectCard(project);
+        content.appendChild(projectCard);
+
+        // Expand this new project card
+        projectCard.querySelector("details").setAttribute("open", "");
+    }
+
     /**
      * addTodoToProject(projectId, todo)
      *

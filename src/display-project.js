@@ -1,10 +1,10 @@
 export { createProjectCard, createProjectDialog, refreshProjectCardTodos }
 
-import { createCustomCheckbox } from "./custom-checkbox.js";
 import { createTodoCard } from "./display-todo.js";
 import { Log } from "./logger.js";
 import { Project } from "./project";
 import { Todo } from "./todo-item.js";
+import { getAppHandlerInstance } from "./app-handler.js";
 import "./styles/project.css";
 import "./styles/modal.css";
 
@@ -122,7 +122,7 @@ function createProjectDialog() {
                 const newProject = new Project(titleInput.value);
 
                 // Display the project
-                document.body.appendChild(createProjectCard(newProject));
+                getAppHandlerInstance().addProject(newProject);
             }
         }
         // Clear the dialog entries
