@@ -174,13 +174,13 @@ function saveTodo(key, todo) {
  */
 function autoSaveTodo(todo) {
     const handler = {
-        set(target, prop, newValue) {
+        set(target) {
             const result = Reflect.set(...arguments);
             Log.v("Autosaving Todo...");
             saveTodo(target.id, target);
             return result;
         },
-        deleteProperty(target, prop) {
+        deleteProperty(target) {
             const result = Reflect.deleteProperty(...arguments);
             Log.v("Autosaving Todo...");
             saveTodo(target.id, target);
@@ -340,13 +340,13 @@ function saveProject(key, project) {
  */
 function autoSaveProject(project) {
     const handler = {
-        set(target, prop, newValue) {
+        set(target) {
                 const result = Reflect.set(...arguments);
                 Log.v("Autosaving Project...");
                 saveProject(target.id, target);
                 return result;
         },
-        deleteProperty(target, prop) {
+        deleteProperty(target) {
                 const result = Reflect.deleteProperty(...arguments);
                 Log.v("Autosaving Project...");
                 saveProject(target.id, target);
@@ -387,45 +387,6 @@ function restoreProject(key) {
     }
 
     return parseProjectString(projectString);
-}
-
-/**
- * stringifyProjectArray
- *
- * Convert and array of Projects into storable JSON string
- * @param {Project[]} projectArray
- * @returns {String} JSON string representation of the array of Projects
- */
-function stringifyProjectArray(projectArray) {
-    // Stringify the array of Project objects
-    let stringifiedProjectArray = new Array();
-    for (const project of projectArray) {
-        stringifiedProjectArray.push(stringifyProject(project));
-    }
-
-    return JSON.stringify(stringifiedProjectArray);
-    // return stringifiedProjectArray;
-}
-
-/**
- * parseProjectArrayString
- *
- * Convert a JSON string representation of an array of Projects into a Project array
- *
- * @param {String} projectArrayString
- * @returns {Project[]} A Project array created from the JSON string
- */
-function parseProjectArrayString(projectArrayString){
-    // Parse the JSON string to an intermediate object
-    const projectJsonArray = JSON.parse(projectArrayString);
-
-    // Create and return a new array of Projects made from the restored data
-    let projectArray = new Array();
-    for (const projectJson of projectJsonArray) {
-        projectArray.push(parseProjectString(projectJson));
-    }
-
-    return projectArray;
 }
 
 /**
