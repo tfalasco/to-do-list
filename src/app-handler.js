@@ -4,7 +4,6 @@ import * as storage from "./storage-wrapper.js";
 import { createProjectCard, createProjectDialog, refreshProjectCardTodos } from "./display-project.js";
 import { createHero } from "./display-hero.js";
 import { createTodoDialog } from "./display-todo.js";
-import { Log } from "./logger.js";
 import "./styles/main.css";
 
 export { getAppHandlerInstance, createTestData, deleteAllData };

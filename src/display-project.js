@@ -15,7 +15,7 @@ function createProjectCard(project) {
     const todoContainer = document.createElement("div");
     const addTodoButton = document.createElement("button");
 
-    if (!project instanceof Project) {
+    if (!(project instanceof Project)) {
         Log.e("'project' must be of type Project.  Nothing displayed.");
         return;
     }
@@ -47,7 +47,7 @@ function createProjectCard(project) {
 }
 
 function displayTodo(todo) {
-        if (!todo instanceof Todo) {
+        if (!(todo instanceof Todo)) {
         Log.e("'todo' must be of type Todo. Item not displayed.");
         return;
     }

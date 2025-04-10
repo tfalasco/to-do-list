@@ -1,5 +1,5 @@
 import { Todo } from "./todo-item";
-import { differenceInCalendarDays, differenceInDays, formatDistanceToNow } from "date-fns";
+import { differenceInCalendarDays } from "date-fns";
 import { Log } from "./logger";
 import { createCustomCheckbox } from "./custom-checkbox";
 import { getAppHandlerInstance } from "./app-handler";
@@ -9,7 +9,7 @@ import "./styles/modal.css";
 export { createTodoCard, createTodoDialog };
 
 function createTodoCard(todo) {
-    if (!todo instanceof Todo) {
+    if (!(todo instanceof Todo)) {
         Log.e("'todo' must be of type Todo. Item not displayed.");
         return;
     }

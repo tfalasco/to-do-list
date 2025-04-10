@@ -95,7 +95,6 @@ class Todo {
      */
     set done(isDone) {
         this._done = isDone;
-        return this._done;
     }
 
     get done() {
