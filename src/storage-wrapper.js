@@ -1,20 +1,19 @@
-
 import { Todo } from "./todo-item.js";
 import { Log } from "./logger.js";
 import { Project } from "./project.js";
 
 export {
-    saveTodo,
-    autoSaveTodo,
-    restoreTodo,
-    deleteItem,
-    deleteAll,
-    saveProject,
-    autoSaveProject,
-    restoreProject,
-    fetchProjectIds,
-    AutosavedMap,
- };
+  saveTodo,
+  autoSaveTodo,
+  restoreTodo,
+  deleteItem,
+  deleteAll,
+  saveProject,
+  autoSaveProject,
+  restoreProject,
+  fetchProjectIds,
+  AutosavedMap,
+};
 
 // Storage type
 // "sessionStorage" saves data for a single session
@@ -35,20 +34,19 @@ const projectIds = new Array();
  * @returns {Boolean}
  */
 function storageAvailable() {
-    try {
-        const x = "__storage_test__";
-        storage.setItem(x, x);
-        storage.removeItem(x);
-        return true;
-    }
-    catch (e) {
-        return (
-            e instanceof DOMException &&
-            e.name === "QuotaExceededError" &&
-            storage &&
-            storage.length !== 0
-        );
-    }
+  try {
+    const x = "__storage_test__";
+    storage.setItem(x, x);
+    storage.removeItem(x);
+    return true;
+  } catch (e) {
+    return (
+      e instanceof DOMException &&
+      e.name === "QuotaExceededError" &&
+      storage &&
+      storage.length !== 0
+    );
+  }
 }
 
 /**
@@ -61,16 +59,15 @@ function storageAvailable() {
  * @param {String} projectId
  */
 function storeProjectId(projectId) {
-    if (!projectIds.includes(projectId)) {
-        projectIds.push(projectId);
-        if (!storageAvailable()) {
-            Log.e("localStorage is not available.  Cannot save projectIds.");
-            return;
-        }
-        else {
-            storage.setItem("projectIds", JSON.stringify(projectIds));
-        }
+  if (!projectIds.includes(projectId)) {
+    projectIds.push(projectId);
+    if (!storageAvailable()) {
+      Log.e("localStorage is not available.  Cannot save projectIds.");
+      return;
+    } else {
+      storage.setItem("projectIds", JSON.stringify(projectIds));
     }
+  }
 }
 
 /**
@@ -81,13 +78,12 @@ function storeProjectId(projectId) {
  * @returns {String[]} Array of project IDs saved in localstorage
  */
 function fetchProjectIds() {
-    if (!storageAvailable()) {
-        Log.e("localStorage is not available.  Cannot restore projectIds.");
-        return null;
-    }
-    else {
-        return JSON.parse(storage.getItem("projectIds"));
-    }
+  if (!storageAvailable()) {
+    Log.e("localStorage is not available.  Cannot restore projectIds.");
+    return null;
+  } else {
+    return JSON.parse(storage.getItem("projectIds"));
+  }
 }
 
 /**
@@ -99,13 +95,13 @@ function fetchProjectIds() {
  * @returns JSON String representation of the Todo
  */
 function stringifyTodo(todo) {
-    // The protected properties don't get stringified, so we have
-    // to modify the JSON to add the protected properties.
-    const todoJsonStr = JSON.stringify(todo);
-    const todoJsonObj = JSON.parse(todoJsonStr);
-    todoJsonObj.priority = todo.priority;
-    todoJsonObj.id = todo.id;
-    return JSON.stringify(todoJsonObj);
+  // The protected properties don't get stringified, so we have
+  // to modify the JSON to add the protected properties.
+  const todoJsonStr = JSON.stringify(todo);
+  const todoJsonObj = JSON.parse(todoJsonStr);
+  todoJsonObj.priority = todo.priority;
+  todoJsonObj.id = todo.id;
+  return JSON.stringify(todoJsonObj);
 }
 
 /**
@@ -117,18 +113,18 @@ function stringifyTodo(todo) {
  * @returns {Todo} a Todo object created from the JSON string
  */
 function parseTodoString(todoString) {
-    // Parse the JSON string to an intermediate object
-    const todoJson = JSON.parse(todoString);
+  // Parse the JSON string to an intermediate object
+  const todoJson = JSON.parse(todoString);
 
-    // Create and return a new Todo made from the restored data
-    return new Todo(
-        todoJson._title,
-        todoJson._description,
-        new Date(todoJson.dueDate),
-        todoJson._priority,
-        todoJson.id,
-        todoJson._done,
-    )
+  // Create and return a new Todo made from the restored data
+  return new Todo(
+    todoJson._title,
+    todoJson._description,
+    new Date(todoJson.dueDate),
+    todoJson._priority,
+    todoJson.id,
+    todoJson._done,
+  );
 }
 
 /**
@@ -141,26 +137,26 @@ function parseTodoString(todoString) {
  * @returns
  */
 function saveTodo(key, todo) {
-    Log.v(`Saving Todo ${todo.title}`);
+  Log.v(`Saving Todo ${todo.title}`);
 
-    // Validate we can save this Todo
-    if (!storageAvailable()) {
-        Log.e("localStorage is not available.  Cannot save Todo.");
-        return;
-    }
-    if (!(typeof key === 'string')) {
-        Log.e("'key' param must be a String.  Todo not saved.");
-        Log.e(`'key' is instance of ${key.constructor.name}`)
-        return;
-    }
-    if (!(todo instanceof Todo)) {
-        Log.e("'todo' param must be a Todo.  Nothing saved.");
-        return;
-    }
+  // Validate we can save this Todo
+  if (!storageAvailable()) {
+    Log.e("localStorage is not available.  Cannot save Todo.");
+    return;
+  }
+  if (!(typeof key === "string")) {
+    Log.e("'key' param must be a String.  Todo not saved.");
+    Log.e(`'key' is instance of ${key.constructor.name}`);
+    return;
+  }
+  if (!(todo instanceof Todo)) {
+    Log.e("'todo' param must be a Todo.  Nothing saved.");
+    return;
+  }
 
-    // Save the Todo
-    storage.setItem(key, stringifyTodo(todo));
-    Log.v(`Saved Todo ${todo.title}.`);
+  // Save the Todo
+  storage.setItem(key, stringifyTodo(todo));
+  Log.v(`Saved Todo ${todo.title}.`);
 }
 
 /**
@@ -173,23 +169,23 @@ function saveTodo(key, todo) {
  * @returns {Proxy} A Proxy of the given Todo
  */
 function autoSaveTodo(todo) {
-    const handler = {
-        set(target) {
-            const result = Reflect.set(...arguments);
-            Log.v("Autosaving Todo...");
-            saveTodo(target.id, target);
-            return result;
-        },
-        deleteProperty(target) {
-            const result = Reflect.deleteProperty(...arguments);
-            Log.v("Autosaving Todo...");
-            saveTodo(target.id, target);
-            return result;
-        }
-      };
+  const handler = {
+    set(target) {
+      const result = Reflect.set(...arguments);
+      Log.v("Autosaving Todo...");
+      saveTodo(target.id, target);
+      return result;
+    },
+    deleteProperty(target) {
+      const result = Reflect.deleteProperty(...arguments);
+      Log.v("Autosaving Todo...");
+      saveTodo(target.id, target);
+      return result;
+    },
+  };
 
-      const autoSavedTodo = new Proxy(todo, handler);
-      return autoSavedTodo;
+  const autoSavedTodo = new Proxy(todo, handler);
+  return autoSavedTodo;
 }
 
 /**
@@ -200,27 +196,27 @@ function autoSaveTodo(todo) {
  * @param {String} key
  * @returns {Todo} Todo object recreated from the key in localStorage
  */
-function restoreTodo (key) {
-    Log.v(`Restoring Todo from key ${key}`);
+function restoreTodo(key) {
+  Log.v(`Restoring Todo from key ${key}`);
 
-    // Validate we can restore this Todo
-    if (!storageAvailable()) {
-        Log.e("localStorage is not available.  Cannot restore Todo.");
-        return;
-    }
-    if (!(typeof key === 'string')) {
-        Log.e("'key' param must be a String.  Todo not restored.");
-        return;
-    }
+  // Validate we can restore this Todo
+  if (!storageAvailable()) {
+    Log.e("localStorage is not available.  Cannot restore Todo.");
+    return;
+  }
+  if (!(typeof key === "string")) {
+    Log.e("'key' param must be a String.  Todo not restored.");
+    return;
+  }
 
-    // Get the raw stored data as a JSON string
-    const todoString = storage.getItem(key);
-    if (!todoString) {
-        Log.e(`Could not restore ${key}.`);
-        return;
-    }
+  // Get the raw stored data as a JSON string
+  const todoString = storage.getItem(key);
+  if (!todoString) {
+    Log.e(`Could not restore ${key}.`);
+    return;
+  }
 
-    return parseTodoString(todoString);
+  return parseTodoString(todoString);
 }
 
 /**
@@ -231,7 +227,7 @@ function restoreTodo (key) {
  * @param {String} key
  */
 function deleteItem(key) {
-    storage.removeItem(key);
+  storage.removeItem(key);
 }
 
 /**
@@ -240,7 +236,7 @@ function deleteItem(key) {
  * Clear everything from storage
  */
 function deleteAll() {
-    storage.clear();
+  storage.clear();
 }
 
 /**
@@ -252,20 +248,20 @@ function deleteAll() {
  * @returns {String} JSON string representation of the Project
  */
 function stringifyProject(project) {
-    // We can't stringify the project because the AutosavedMap
-    // contains a reference to its parent Project, which would
-    // create a circular reference.  Instead, we will stringify
-    // the project manually.
-    const projectJsonObj = JSON.parse("{}");
-    projectJsonObj._name = project.name;
-    projectJsonObj.id = project.id;
+  // We can't stringify the project because the AutosavedMap
+  // contains a reference to its parent Project, which would
+  // create a circular reference.  Instead, we will stringify
+  // the project manually.
+  const projectJsonObj = JSON.parse("{}");
+  projectJsonObj._name = project.name;
+  projectJsonObj.id = project.id;
 
-    // We are only saving the IDs of this project's Todos because
-    // each Todo is saved separately, using its ID as the key.
-    const todoKeyArray = Array.from(project.todos.keys());
-    projectJsonObj._todos = todoKeyArray;
+  // We are only saving the IDs of this project's Todos because
+  // each Todo is saved separately, using its ID as the key.
+  const todoKeyArray = Array.from(project.todos.keys());
+  projectJsonObj._todos = todoKeyArray;
 
-    return JSON.stringify(projectJsonObj);
+  return JSON.stringify(projectJsonObj);
 }
 
 /**
@@ -276,22 +272,22 @@ function stringifyProject(project) {
  * @param {String} projectString
  * @returns {Project} A Project object created from the JSON string
  */
-function parseProjectString(projectString){
-    // Parse the JSON string to an intermediate object
-    const projectJson = JSON.parse(projectString);
+function parseProjectString(projectString) {
+  // Parse the JSON string to an intermediate object
+  const projectJson = JSON.parse(projectString);
 
-    // Create and return a new Project made from the restored data
-    const project = new Project(projectJson._name, projectJson.id);
-    // We only store the ID of each todo, so we need to fetch the
-    // Todo object from memory and add it to the project
-    for (const todoId of projectJson._todos) {
-        const todo = restoreTodo(todoId);
-        if (todo) {
-            project.addTodo(autoSaveTodo(todo));
-        }
+  // Create and return a new Project made from the restored data
+  const project = new Project(projectJson._name, projectJson.id);
+  // We only store the ID of each todo, so we need to fetch the
+  // Todo object from memory and add it to the project
+  for (const todoId of projectJson._todos) {
+    const todo = restoreTodo(todoId);
+    if (todo) {
+      project.addTodo(autoSaveTodo(todo));
     }
+  }
 
-    return project;
+  return project;
 }
 
 /**
@@ -304,29 +300,29 @@ function parseProjectString(projectString){
  * @returns
  */
 function saveProject(key, project) {
-    Log.v(`Saving Project ${project._name}`);
+  Log.v(`Saving Project ${project._name}`);
 
-    // Validate we can save this Project
-    if (!storageAvailable()) {
-        Log.e("localStorage is not available.  Cannot save Project.");
-        return;
-    }
-    if (!(typeof key === 'string')) {
-        Log.e("'key' param must be a String.  Project not saved.");
-        Log.e(`'key' is instance of ${key.constructor.name}`)
-        return;
-    }
-    if (!(project instanceof Project)) {
-        Log.e("'project' param must be a Project.  Nothing saved.");
-        return;
-    }
+  // Validate we can save this Project
+  if (!storageAvailable()) {
+    Log.e("localStorage is not available.  Cannot save Project.");
+    return;
+  }
+  if (!(typeof key === "string")) {
+    Log.e("'key' param must be a String.  Project not saved.");
+    Log.e(`'key' is instance of ${key.constructor.name}`);
+    return;
+  }
+  if (!(project instanceof Project)) {
+    Log.e("'project' param must be a Project.  Nothing saved.");
+    return;
+  }
 
-    // Save the project
-    storage.setItem(key, stringifyProject(project));
-    Log.v(`Saved Project ${project._name}`);
+  // Save the project
+  storage.setItem(key, stringifyProject(project));
+  Log.v(`Saved Project ${project._name}`);
 
-    // Save the project ID
-    storeProjectId(project.id);
+  // Save the project ID
+  storeProjectId(project.id);
 }
 
 /**
@@ -339,23 +335,23 @@ function saveProject(key, project) {
  * @returns A Proxy of the given Project
  */
 function autoSaveProject(project) {
-    const handler = {
-        set(target) {
-                const result = Reflect.set(...arguments);
-                Log.v("Autosaving Project...");
-                saveProject(target.id, target);
-                return result;
-        },
-        deleteProperty(target) {
-                const result = Reflect.deleteProperty(...arguments);
-                Log.v("Autosaving Project...");
-                saveProject(target.id, target);
-                return result;
-        },
-      };
+  const handler = {
+    set(target) {
+      const result = Reflect.set(...arguments);
+      Log.v("Autosaving Project...");
+      saveProject(target.id, target);
+      return result;
+    },
+    deleteProperty(target) {
+      const result = Reflect.deleteProperty(...arguments);
+      Log.v("Autosaving Project...");
+      saveProject(target.id, target);
+      return result;
+    },
+  };
 
-      const autoSavedProject = new Proxy(project, handler);
-      return autoSavedProject;
+  const autoSavedProject = new Proxy(project, handler);
+  return autoSavedProject;
 }
 
 /**
@@ -367,26 +363,26 @@ function autoSaveProject(project) {
  * @returns {Project} Project object recreated from the key in localStorage
  */
 function restoreProject(key) {
-    Log.v(`Restoring Project from key ${key}`);
+  Log.v(`Restoring Project from key ${key}`);
 
-    // Validate we can restore this Project
-    if (!storageAvailable()) {
-        Log.e("localStorage is not available.  Cannot restore Project.");
-        return;
-    }
-    if (!(typeof key === 'string')) {
-        Log.e("'key' param must be a String.  Project not restored.");
-        return;
-    }
+  // Validate we can restore this Project
+  if (!storageAvailable()) {
+    Log.e("localStorage is not available.  Cannot restore Project.");
+    return;
+  }
+  if (!(typeof key === "string")) {
+    Log.e("'key' param must be a String.  Project not restored.");
+    return;
+  }
 
-    // Get the raw stored data as a JSON string
-    const projectString = storage.getItem(key);
-    if (!projectString) {
-        Log.e(`Could not restore ${key}.`);
-        return;
-    }
+  // Get the raw stored data as a JSON string
+  const projectString = storage.getItem(key);
+  if (!projectString) {
+    Log.e(`Could not restore ${key}.`);
+    return;
+  }
 
-    return parseProjectString(projectString);
+  return parseProjectString(projectString);
 }
 
 /**
@@ -396,19 +392,19 @@ function restoreProject(key) {
  * Project whenever an entry is added or removed.
  */
 class AutosavedMap extends Map {
-    constructor(parentProject) {
-        super();
-        this.parentProject = parentProject;
-        Log.d(this.parentProject);
-    }
-    set(...args) {
-        super.set(...args);
-        Log.v("Autosaving Map.set");
-        saveProject(this.parentProject.id, this.parentProject);
-    }
-    deleteProperty(...args) {
-        super.deleteProperty(...args);
-        Log.v("Autosaving Map.deleteProperty");
-        saveProject(this.parentProject.id, this.parentProject);
-    }
+  constructor(parentProject) {
+    super();
+    this.parentProject = parentProject;
+    Log.d(this.parentProject);
+  }
+  set(...args) {
+    super.set(...args);
+    Log.v("Autosaving Map.set");
+    saveProject(this.parentProject.id, this.parentProject);
+  }
+  deleteProperty(...args) {
+    super.deleteProperty(...args);
+    Log.v("Autosaving Map.deleteProperty");
+    saveProject(this.parentProject.id, this.parentProject);
+  }
 }

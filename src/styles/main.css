@@ -1,28 +1,28 @@
-@import url('https://fonts.googleapis.com/css?family=Raleway');
+@import url("https://fonts.googleapis.com/css?family=Raleway");
 @import "color-scheme.css";
 
 * {
-    box-sizing: border-box;
-    font-family: Raleway, sans-serif
+  box-sizing: border-box;
+  font-family: Raleway, sans-serif;
 }
 
 html {
-    width: 100%;
-    height: 100%;
-    color: var(--md-sys-color-on-background);
-    background-color: var(--md-sys-color-background);
+  width: 100%;
+  height: 100%;
+  color: var(--md-sys-color-on-background);
+  background-color: var(--md-sys-color-background);
 }
 
 #layout {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    min-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-width: 500px;
 }
 
 #content {
-    display: flex;
-    flex-direction: column;
-    width: 80%;
+  display: flex;
+  flex-direction: column;
+  width: 80%;
 }

@@ -1,57 +1,57 @@
 @import "color-scheme.css";
 
-.custom-check-container{
-    display: flex;
-    align-items: center;
+.custom-check-container {
+  display: flex;
+  align-items: center;
 }
 
 .custom-check-container label {
-    cursor: pointer;
-    display: flex;
+  cursor: pointer;
+  display: flex;
 }
 
 .custom-check-container input[type="checkbox"] {
-    cursor: pointer;
-    opacity: 0;
-    position: absolute;
+  cursor: pointer;
+  opacity: 0;
+  position: absolute;
 }
 
 .custom-check-container label::before {
-    content: "";
-    width: 1em;
-    height: 1em;
-    border-radius: 0.15em;
-    margin-right: 0.5em;
-    border-width: 0.05em;
-    border-style:  solid;
-    border-color: var(--md-sys-color-outline);
+  content: "";
+  width: 1em;
+  height: 1em;
+  border-radius: 0.15em;
+  margin-right: 0.5em;
+  border-width: 0.05em;
+  border-style: solid;
+  border-color: var(--md-sys-color-outline);
 }
 
 .custom-check-container label:hover::before,
 .custom-check-container input [type="checkbox"]:hover + label::before {
-    background-color: var(--md-sys-color-surface-variant);
+  background-color: var(--md-sys-color-surface-variant);
 }
 
 .custom-check-container input[type="checkbox"]:focus + label::before {
-    box-shadow: 0 0 20px var(--md-sys-color-primary);
+  box-shadow: 0 0 20px var(--md-sys-color-primary);
 }
 
 .custom-check-container input[type="checkbox"]:disabled + label,
 .custom-check-container input[type="checkbox"]:disabled {
-    color: #aaa;
-    cursor: default;
+  color: #aaa;
+  cursor: default;
 }
 
 .custom-check-container input[type="checkbox"]:checked + label::before {
-    content: "\002714"; /* Check symbol */
-    background-color: var(--md-sys-color-primary);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color:var(--md-sys-color-on-primary);
+  content: "\002714"; /* Check symbol */
+  background-color: var(--md-sys-color-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--md-sys-color-on-primary);
 }
 
 .custom-check-container input[type="checkbox"]:disabled + label::before {
-    background-color: #ccc;
-    border-color: #999;
+  background-color: #ccc;
+  border-color: #999;
 }

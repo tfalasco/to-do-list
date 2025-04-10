@@ -1,80 +1,80 @@
 @import "color-scheme.css";
 
 .todo-card {
-    color: var(--md-sys-color-on-surface);
-    outline: 2px solid var(--md-sys-color-outline);
-    border-radius: 5px;
-    margin: 10px;
-    padding: 5px;
-    background-color: var(--md-sys-color-surface);
-    box-shadow: 2px 2px 8px var(--md-sys-color-shadow);
-    display: flex;
-    flex-direction: column;
+  color: var(--md-sys-color-on-surface);
+  outline: 2px solid var(--md-sys-color-outline);
+  border-radius: 5px;
+  margin: 10px;
+  padding: 5px;
+  background-color: var(--md-sys-color-surface);
+  box-shadow: 2px 2px 8px var(--md-sys-color-shadow);
+  display: flex;
+  flex-direction: column;
 }
 
 .todo-card:hover {
-    outline: 4px solid var(--md-sys-color-primary);
+  outline: 4px solid var(--md-sys-color-primary);
 }
 
 .todo-title-bar > h2,
 .todo-card > p,
 .due-done-container {
-    padding: 0px;
-    margin: 5px;
+  padding: 0px;
+  margin: 5px;
 }
 
 .todo-done h2,
 .todo-done p,
 .todo-done label {
-    color: gray;
+  color: gray;
 }
 
 .due-done-container {
-    padding: 0px;
-    margin: 5px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  padding: 0px;
+  margin: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .due-done-container p {
-    padding: 0px;
-    margin: 5px 0px;
+  padding: 0px;
+  margin: 5px 0px;
 }
 
 .delete-todo-button {
-    color: var(--md-sys-color-on-error);
-    background-color: var(--md-sys-color-error);
-    border: none;
-    border-radius: 50%;
-    text-align: center;
-    display: inline-block;
-    font-size: 1em;
-    font-weight: bold;
-    width: 1.5em;
-    height: 1.5em;
-    margin-right: 10px;
+  color: var(--md-sys-color-on-error);
+  background-color: var(--md-sys-color-error);
+  border: none;
+  border-radius: 50%;
+  text-align: center;
+  display: inline-block;
+  font-size: 1em;
+  font-weight: bold;
+  width: 1.5em;
+  height: 1.5em;
+  margin-right: 10px;
 }
 
 .delete-todo-button:hover {
-    background-color: var(--md-sys-color-on-error);
-    color: var(--md-sys-color-error);
-    outline: 2px solid var(--md-sys-color-error);
+  background-color: var(--md-sys-color-on-error);
+  color: var(--md-sys-color-error);
+  outline: 2px solid var(--md-sys-color-error);
 }
 
 .delete-todo-button:active {
-    background-color: var(--md-sys-color-on-error-container);
-    color: var(--md-sys-color-error-container);
+  background-color: var(--md-sys-color-on-error-container);
+  color: var(--md-sys-color-error-container);
 }
 
 .todo-title-bar {
-    margin: 0px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  margin: 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .overdue {
-    color: var(--md-sys-color-error);
+  color: var(--md-sys-color-error);
 }
